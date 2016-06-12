@@ -1,0 +1,25 @@
+{
+    "title": "CompareAssets",
+    "authors": [ "Mike Morano <mmorano@mikeandwan.us>" ],
+    "description": "Tool to compare source photos for my website",
+    "version": "0.1.0",
+    "packOptions": {
+        "licenseUrl": "https://github.com/AerisG222/CompareAssets/blob/master/LICENSE.md",
+        "projectUrl": "https://github.com/AerisG222/CompareAssets",
+        "summary": "Tool to compare source photos for my website"
+    },
+    "buildOptions": {
+        "debugType": "portable",
+        "emitEntryPoint": true,
+        "warningsAsErrors": true
+    },
+    "commands": {
+        "run": "CompareAssets" 
+    },
+    "dependencies": {
+        "AWSSDK.Glacier": "3.2.4.1-beta"
+    },
+    "frameworks": {
+        "net451": { }
+    }
+}
