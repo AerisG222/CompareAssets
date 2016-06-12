@@ -68,13 +68,13 @@ namespace CompareAssets
         bool CompareYears(string[] srcYearDirs, string[] cmpYearDirs)
         {
             var result = true;
-            var count = Max(srcYearDirs.Length, cmpYearDirs.Length);
+            var count = Math.Max(srcYearDirs.Length, cmpYearDirs.Length);
             
             var cmp = new DirectoryListComparison(srcYearDirs, cmpYearDirs);
 
             if(cmp.NotInCompare.Count() > 0 || cmp.NotInSource.Count() > 0)
             {
-                ReportDirectoryListDifferences(cmp);
+                ReportListDifferences(cmp);
                 result = false;
             }
 
@@ -110,13 +110,13 @@ namespace CompareAssets
         bool CompareCategories(string[] srcCategoryDirs, string[] cmpCategoryDirs)
         {
             var result = true;
-            var count = Max(srcCategoryDirs.Length, cmpCategoryDirs.Length);
+            var count = Math.Max(srcCategoryDirs.Length, cmpCategoryDirs.Length);
             
             var cmp = new DirectoryListComparison(srcCategoryDirs, cmpCategoryDirs);
 
             if(cmp.NotInCompare.Count() > 0 || cmp.NotInSource.Count() > 0)
             {
-                ReportDirectoryListDifferences(cmp);
+                ReportListDifferences(cmp);
                 result = false;
             }
 
@@ -176,7 +176,7 @@ namespace CompareAssets
 
         void ReportListDifferences(ListComparison cmp)
         {
-            string type = ListComparison is DirectoryListComparison ? "directories" : "files";
+            string type = cmp is DirectoryListComparison ? "directories" : "files";
 
             if(cmp.NotInCompare.Count() > 0)
             {
@@ -229,15 +229,17 @@ namespace CompareAssets
             var uniqueOrigFileNames = origFileNames.Except(rawFileNames).ToList();
 
             // add all orig files that are not based on raw files
-            list.AddRange(origFiles.Where(x => uniqueOrigFileNames.Contains(Path.GetFilenameWithoutExtension(x))));
+            list.AddRange(origFiles.Where(x => uniqueOrigFileNames.Contains(Path.GetFileNameWithoutExtension(x))));
+
+            return list;
         }
 
 
-        IEnumerable<string> GetFileNames(string[] files)
+        IEnumerable<string> GetFileNames(IEnumerable<string> files)
         {
             foreach(var file in files)
             {
-                yield return Path.GetFilenameWithoutExtension(file);
+                yield return Path.GetFileNameWithoutExtension(file);
             }
         }
     }

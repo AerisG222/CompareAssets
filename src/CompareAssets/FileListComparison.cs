@@ -26,7 +26,7 @@ namespace CompareAssets
             var cmpFiles = GetFileNames(_cmpFiles);
             
             NotInCompare = srcFiles.Except(cmpFiles);
-            NotInSoruce = cmpFiles.Except(srcFiles);
+            NotInSource = cmpFiles.Except(srcFiles);
             Common = srcFiles.Intersect(cmpFiles);
         }
 

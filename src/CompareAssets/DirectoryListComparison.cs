@@ -26,7 +26,7 @@ namespace CompareAssets
             var cmpDirs = GetDirectoryNames(_cmpDirs);
             
             NotInCompare = srcDirs.Except(cmpDirs);
-            NotInSoruce = cmpDirs.Except(srcDirs);
+            NotInSource = cmpDirs.Except(srcDirs);
             Common = srcDirs.Intersect(cmpDirs);
         }
 
