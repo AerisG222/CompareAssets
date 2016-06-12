@@ -13,6 +13,7 @@ namespace CompareAssets
             if(args.Length != 2)
             {
                 ShowUsage();
+                Environment.Exit(1);
             }
 
             if(!Directory.Exists(args[0]))
