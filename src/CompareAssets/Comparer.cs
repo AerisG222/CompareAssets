@@ -41,14 +41,17 @@ namespace CompareAssets
 
             if(srcLevel == ComparisonLevel.All)
             {
+                Console.WriteLine("Comparing all...");
                 return CompareAll(_srcDir, _cmpDir);
             }
             else if(srcLevel == ComparisonLevel.Year)
             {
+                Console.WriteLine("Comparing year...");
                 return CompareYear(_srcDir, _cmpDir);
             }
             else if(srcLevel == ComparisonLevel.Category)
             {
+                Console.WriteLine("Comparing category...");
                 return CompareCategory(_srcDir, _cmpDir);
             }
 
@@ -71,6 +74,7 @@ namespace CompareAssets
             var count = Math.Max(srcYearDirs.Length, cmpYearDirs.Length);
             
             var cmp = new DirectoryListComparison(srcYearDirs, cmpYearDirs);
+            cmp.Compare();
 
             if(cmp.NotInCompare.Count() > 0 || cmp.NotInSource.Count() > 0)
             {
@@ -83,12 +87,7 @@ namespace CompareAssets
                 var srcDir = srcYearDirs.Single(x => x.EndsWith(dir));
                 var cmpDir = cmpYearDirs.Single(x => x.EndsWith(dir));
 
-                Console.WriteLine($" -- {dir}");
-
-                var srcCatDirs = Directory.GetDirectories(srcDir);
-                var cmpCatDirs = Directory.GetDirectories(cmpDir);
-
-                if(!CompareCategories(srcCatDirs, cmpCatDirs))
+                if(!CompareYear(srcDir, cmpDir))
                 {
                     result = false;
                 }
@@ -100,6 +99,8 @@ namespace CompareAssets
 
         bool CompareYear(string srcDir, string cmpDir)
         {
+            Console.WriteLine($"    ** {new DirectoryInfo(srcDir).Name} **");
+
             var srcCategoryDirs = Directory.GetDirectories(_srcDir);
             var cmpCategoryDirs = Directory.GetDirectories(_cmpDir);
 
@@ -113,6 +114,7 @@ namespace CompareAssets
             var count = Math.Max(srcCategoryDirs.Length, cmpCategoryDirs.Length);
             
             var cmp = new DirectoryListComparison(srcCategoryDirs, cmpCategoryDirs);
+            cmp.Compare();
 
             if(cmp.NotInCompare.Count() > 0 || cmp.NotInSource.Count() > 0)
             {
@@ -124,8 +126,6 @@ namespace CompareAssets
             {
                 var srcDir = srcCategoryDirs.Single(x => x.EndsWith(dir));
                 var cmpDir = cmpCategoryDirs.Single(x => x.EndsWith(dir));
-
-                Console.WriteLine($" -- {dir}");
 
                 if(!CompareCategory(srcDir, cmpDir))
                 {
@@ -140,11 +140,43 @@ namespace CompareAssets
         bool CompareCategory(string srcDir, string cmpDir)
         {
             var result = true;
+            var match = 0;
+            var totalCount = 0;
+
+            Console.WriteLine($"        ** {new DirectoryInfo(srcDir).Name} **");
 
             // old approach kept the original in the 'raw' or 'orig', so this takes a little more work
-            var srcFiles = GetSourceFiles(srcDir);
+            var srcFiles = GetSourceFiles(srcDir).ToArray();
             // new approach always has the untouched original in the 'src' directory
             var cmpFiles = Directory.GetFiles(Path.Combine(cmpDir, "src"));
+
+            var cmp = new FileListComparison(srcFiles, cmpFiles);
+            cmp.Compare();
+
+            if(cmp.NotInCompare.Count() > 0 || cmp.NotInSource.Count() > 0)
+            {
+                ReportListDifferences(cmp);
+                result = false;
+            }
+
+            foreach(var file in cmp.Common)
+            {
+                totalCount++;
+
+                var srcFile = srcFiles.Single(x => x.EndsWith(file));
+                var cmpFile = cmpFiles.Single(x => x.EndsWith(file));
+
+                if(CompareFiles(srcFile, cmpFile))
+                {
+                    match++;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+
+            Console.WriteLine($"            => {match} of {totalCount} files match");
 
             return result;
         }
@@ -157,7 +189,7 @@ namespace CompareAssets
 
             if(!string.Equals(srcHash, cmpHash, StringComparison.OrdinalIgnoreCase))
             {
-                Console.WriteLine($"Files did not match!  [{srcFile}] [{cmpFile}]");
+                Console.WriteLine($"            no match:  [{Path.GetFileName(srcFile)}]");
                 return false;
             }
 
@@ -180,21 +212,21 @@ namespace CompareAssets
 
             if(cmp.NotInCompare.Count() > 0)
             {
-                Console.WriteLine($"  * {type} not found in compare:");
+                Console.WriteLine($"            * {type} not found in compare:");
 
                 foreach(var item in cmp.NotInCompare)
                 {
-                    Console.WriteLine($"    - {item}");
+                    Console.WriteLine($"                - {item}");
                 }
             }
 
             if(cmp.NotInSource.Count() > 0)
             {
-                Console.WriteLine($"  * {type} not found in source:");
+                Console.WriteLine($"            * {type} not found in source:");
 
                 foreach(var item in cmp.NotInSource)
                 {
-                    Console.WriteLine($"    - {item}");
+                    Console.WriteLine($"                - {item}");
                 }
             }
         }

@@ -34,8 +34,8 @@ namespace CompareAssets
         {
             var dirs = dir.GetDirectories();
 
-            if(dirs.Count(x => string.Equals(dir.Name, "orig", StringComparison.OrdinalIgnoreCase) || 
-                               string.Equals(dir.Name, "src", StringComparison.OrdinalIgnoreCase)) > 0)
+            if(dirs.Count(x => string.Equals(x.Name, "orig", StringComparison.OrdinalIgnoreCase) || 
+                               string.Equals(x.Name, "src", StringComparison.OrdinalIgnoreCase)) > 0)
             {
                 return true;
             }
