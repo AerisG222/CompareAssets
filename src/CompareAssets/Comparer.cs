@@ -174,8 +174,8 @@ namespace CompareAssets
             Parallel.ForEach(cmp.Common, opts, (file) => {
                 Interlocked.Increment(ref totalCount);
 
-                var srcFile = srcFiles.Single(x => x.EndsWith(file));
-                var cmpFile = cmpFiles.Single(x => x.EndsWith(file));
+                var srcFile = srcFiles.Single(x => string.Equals(Path.GetFileName(x), file));
+                var cmpFile = cmpFiles.Single(x => string.Equals(Path.GetFileName(x), file));
 
                 if(CompareFiles(srcFile, cmpFile))
                 {
