@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Amazon.Glacier;
 
 
@@ -159,24 +161,40 @@ namespace CompareAssets
                 result = false;
             }
 
-            foreach(var file in cmp.Common)
+            var vpus = Environment.ProcessorCount - 1;
+
+            if(vpus < 1)
             {
-                totalCount++;
+                vpus = 1;
+            }
+
+            // try to leave a couple threads available for the GC
+            var opts = new ParallelOptions { MaxDegreeOfParallelism = vpus };
+
+            Parallel.ForEach(cmp.Common, opts, (file) => {
+                Interlocked.Increment(ref totalCount);
 
                 var srcFile = srcFiles.Single(x => x.EndsWith(file));
                 var cmpFile = cmpFiles.Single(x => x.EndsWith(file));
 
                 if(CompareFiles(srcFile, cmpFile))
                 {
-                    match++;
+                    Interlocked.Increment(ref match);
                 }
                 else
                 {
                     result = false;
                 }
-            }
+            });
 
-            Console.WriteLine($"            => {match} of {totalCount} files match");
+            if(match == totalCount)
+            {
+                Console.WriteLine($"            => GREAT - {match} of {totalCount} files match");
+            }
+            else
+            {
+                Console.WriteLine($"            => UH-OH! - {match} of {totalCount} files match");
+            }
 
             return result;
         }
