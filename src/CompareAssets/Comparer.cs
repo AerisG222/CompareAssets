@@ -86,8 +86,8 @@ namespace CompareAssets
 
             foreach(var dir in cmp.Common)
             {
-                var srcDir = srcYearDirs.Single(x => x.EndsWith(dir));
-                var cmpDir = cmpYearDirs.Single(x => x.EndsWith(dir));
+                var srcDir = srcYearDirs.Single(x => string.Equals(new DirectoryInfo(x).Name, dir));
+                var cmpDir = cmpYearDirs.Single(x => string.Equals(new DirectoryInfo(x).Name, dir));
 
                 if(!CompareYear(srcDir, cmpDir))
                 {
@@ -126,8 +126,8 @@ namespace CompareAssets
 
             foreach(var dir in cmp.Common)
             {
-                var srcDir = srcCategoryDirs.Single(x => x.EndsWith(dir));
-                var cmpDir = cmpCategoryDirs.Single(x => x.EndsWith(dir));
+                var srcDir = srcCategoryDirs.Single(x => string.Equals(new DirectoryInfo(x).Name, dir));
+                var cmpDir = cmpCategoryDirs.Single(x => string.Equals(new DirectoryInfo(x).Name, dir));
 
                 if(!CompareCategory(srcDir, cmpDir))
                 {
