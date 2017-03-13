@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Tool to compare source photos for my website</Description>
+    <AssemblyTitle>CompareAssets</AssemblyTitle>
+    <VersionPrefix>0.1.1</VersionPrefix>
+    <Authors>Mike Morano &lt;mmorano@mikeandwan.us&gt;</Authors>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>portable</DebugType>
+    <AssemblyName>CompareAssets</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>CompareAssets</PackageId>
+    <PackageProjectUrl>https://github.com/AerisG222/CompareAssets</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/AerisG222/CompareAssets/blob/master/LICENSE.md</PackageLicenseUrl>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;portable-net451+win8</PackageTargetFallback>
+    <RuntimeFrameworkVersion>1.1.1</RuntimeFrameworkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Glacier" Version="3.3.1.3" />
+  </ItemGroup>
+
+</Project>
